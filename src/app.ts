@@ -30,7 +30,10 @@ app.post('/create/user', async (req, res) => {
                 email,
             },
         })
-        res.json(user);
+        res.json({
+            ...user,
+            message: "Crate data successfully",
+        });
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
@@ -99,27 +102,27 @@ app.get('/posts/', async (req, res) => {
     }
 })
 
-app.post('/post/create', async (req, res) => {
-    try {
+// app.post('/post/create', async (req, res) => { //test create Poste without authorId in params
+//     try {
 
-        const { authorId, title, content, published } = req.body
-        const userFeed = await prisma.post.create({
-            data: { 
-                title,
-                content,
-                authorId, 
-                published 
-            },
-        })
-        res.json(userFeed);
+//         const { authorId, title, content, published } = req.body
+//         const userFeed = await prisma.post.create({
+//             data: { 
+//                 title,
+//                 content,
+//                 authorId, 
+//                 published 
+//             },
+//         })
+//         res.json(userFeed);
 
-    } catch (error: any) {
-        console.log(error.message)
-        res.status(500).json({
-            message: "Internal Server Error",
-        })
-    }
-})
+//     } catch (error: any) {
+//         console.log(error.message)
+//         res.status(500).json({
+//             message: "Internal Server Error",
+//         })
+//     }
+// })
 
 app.post('/post/create/:id', async (req, res) => {
     try {
@@ -138,7 +141,10 @@ app.post('/post/create/:id', async (req, res) => {
                 },
             },
         })
-        res.json(createdPost);
+        res.json({
+            ...createdPost,
+            message: "Crate data successfully",
+        });
 
     } catch (error: any) {
         console.log(error.message)
@@ -181,19 +187,24 @@ app.put('/edit/user/:id', async (req, res) => {
             },
             data:{ name, email}
         })
-
-        res.json(edituser)
+       
+        res.json({
+            ...edituser,
+            message: "Change data successfully",
+        });
+        
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
             message: "Internal Server Error",
+            
         })
     }
 })
 
 
 
-app.put('/edit/post/:id', async (req, res) => {
+app.put('/edit/postId/:id', async (req, res) => {
     try {
         const { id } = req.params
         const {title , content,published} = req.body
@@ -204,7 +215,10 @@ app.put('/edit/post/:id', async (req, res) => {
             data:{ title , content,published}
         })
 
-        res.json(editpost)
+        res.json({
+            ...editpost,
+            message: "Change data successfully",
+        })
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
@@ -229,7 +243,10 @@ app.put('/edit/user/post/:id', async (req, res) => {
                  published}
             })
 
-        res.json(posts)
+        res.json({
+            ...posts,
+            message: "Change data successfully",
+        })
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
