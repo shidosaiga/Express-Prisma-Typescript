@@ -10,10 +10,17 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
     res.json({
-        message: 'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!',
+        message: 'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!'
+    })
+})
+
+app.get('/about', (req, res) => {
+    res.json({
         contract:{
             Email:'Netapirak@gmail.com',
-            Phone:'095-604-3539'
+            Phone:'095-604-3539',
+            MadeBy:'Apirak kaewpachum',
+            College:'Pongsawadi technological college'
         }
     })
 })
@@ -37,7 +44,7 @@ app.post('/create/user', async (req, res) => {
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
-            message: "Internal Server Error",
+            message: "Internal Server Error or something went wrong",
         })
     }
 })
@@ -50,7 +57,7 @@ app.get('/users', async (req, res) => {
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
-            message: "Internal Server Error",
+            message: "Internal Server Error or something went wrong",
         })
     }
 })
@@ -58,17 +65,21 @@ app.get('/users', async (req, res) => {
 app.get('/finduser/:id', async (req, res) => {
     try {
         const { id } = req.params
+        
         const user = await prisma.user.findMany({
             where: {
-                id: Number(id) // Assuming the ID is an integer, convert it if needed
+                id: Number(id), // Assuming the ID is an integer, convert it if needed
             },
+            include:{
+                posts:true
+            }
         })
         res.json(user);
 
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
-            message: "Internal Server Error",
+            message: "Internal Server Error or something went wrong",
         })
     }
 })
@@ -84,7 +95,7 @@ app.get('/post/:id', async (req, res) => {
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
-            message: "Internal Server Error",
+            message: "Internal Server Error or something went wrong",
         })
     }
 })
@@ -97,7 +108,7 @@ app.get('/posts/', async (req, res) => {
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
-            message: "Internal Server Error",
+            message: "Internal Server Error or something went wrong",
         })
     }
 })
@@ -119,7 +130,7 @@ app.get('/posts/', async (req, res) => {
 //     } catch (error: any) {
 //         console.log(error.message)
 //         res.status(500).json({
-//             message: "Internal Server Error",
+//             message: "Internal Server Error or something went wrong",
 //         })
 //     }
 // })
@@ -149,7 +160,7 @@ app.post('/post/create/:id', async (req, res) => {
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
-            message: "Internal Server Error",
+            message: "Internal Server Error or something went wrong",
         })
     }
 })
@@ -172,7 +183,7 @@ app.get('/user/post/:id', async (req, res) => {
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
-            message: "Internal Server Error",
+            message: "Internal Server Error or something went wrong",
         })
     }
 })
@@ -196,7 +207,7 @@ app.put('/edit/user/:id', async (req, res) => {
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
-            message: "Internal Server Error",
+            message: "Internal Server Error or something went wrong",
             
         })
     }
@@ -222,22 +233,23 @@ app.put('/edit/postId/:id', async (req, res) => {
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
-            message: "Internal Server Error",
+            message: "Internal Server Error or something went wrong",
         })
         res.json(error.message)
     }
 })
 
-app.put('/edit/user/post/:id', async (req, res) => {
+app.put('/edit/user/:authorId/post/:id', async (req, res) => {
     try {
-        const {  id } = req.params
-        const {authorId,title , content,published} = req.body
+        const {  id,authorId } = req.params
+        const {title , content,published} = req.body
         const posts = await prisma.post.update({
             where:{
-                id: Number(id)
+                id: Number(id),
+                authorId: Number(authorId)
+                
             },
             data:{ 
-                authorId,
                 title ,
                  content,
                  published}
@@ -250,7 +262,73 @@ app.put('/edit/user/post/:id', async (req, res) => {
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
-            message: "Internal Server Error",
+            message: "Internal Server Error or something went wrong",
+        })
+    }
+})
+
+app.delete('/delete/user/:id',async (req,res) => {
+    try {
+        const {id} = req.params
+        const deleteUser = await prisma.user.delete({
+            where:{
+                id: Number(id)
+            }
+        })
+
+        res.json({
+            deleteUser,
+            message: "delete data successfully",
+        })
+    } catch (error: any) {
+        console.log(error.message)
+        res.status(500).json({
+            message: "Internal Server Error or something went wrong",
+        })
+    }
+})
+
+app.delete('/post/delete/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const {authorId} = req.body
+        const deletePost = await prisma.post.delete({
+            where:{
+                id: Number(id),
+                authorId: Number(authorId),
+            },
+        })
+        res.json({
+            ...deletePost,
+            message: "delete data successfully",
+        })
+
+    } catch (error: any) {
+        console.log(error.message)
+        res.status(500).json({
+            message: "Internal Server Error or something went wrong",
+        })
+    }
+})
+
+app.delete('/deletePost/userId/:authorId/postId/:id', async (req, res) => {
+    try {
+        const { id,authorId } = req.params
+        const deletePost = await prisma.post.deleteMany({
+            where:{
+                id: Number(id),
+                authorId: Number(authorId)
+            },
+        })
+        res.json({
+            ...deletePost,
+            message: "delete data successfully",
+        })
+
+    } catch (error: any) {
+        console.log(error.message)
+        res.status(500).json({
+            message: "Internal Server Error or something went wrong",
         })
     }
 })
