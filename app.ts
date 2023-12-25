@@ -1,32 +1,30 @@
 // src/app.ts
-import express, { Express, Request, Response } from 'express'
+import express, { Express, Request, Response,Router  } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { request } from 'http'
+
 
 const prisma = new PrismaClient()
 const app: Express = express()
 const port: number = 3000
+import about from './router/about'
 
 app.use(express.json());
-
-app.get('/', (req, res) => {
-    res.json({
-        message: 'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!'
-    })
-})
-
-app.get('/about', (req, res) => {
-    res.json({
-        contract:{
-            Email:'Netapirak@gmail.com',
-            Phone:'095-604-3539',
-            MadeBy:'Apirak kaewpachum',
-            College:'Pongsawadi technological college'
-        }
-    })
-})
-
+app.set('views', './src/view');
+app.set('view engine', 'ejs');
+// app.get('/', (req, res) => {
+//     res.json({
+//         message: 'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!'
+//     })
+// })
 app.listen(port, () => console.log(`Application is running on http://localhost:${port}/`))
 
+app.use('/about',about)
+
+
+app.get('/', (req, res) => {
+    res.render('index',{title:'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!'})
+})
 
 app.post('/create/user', async (req, res) => {
     try {
@@ -332,3 +330,4 @@ app.delete('/deletePost/userId/:authorId/postId/:id', async (req, res) => {
         })
     }
 })
+
