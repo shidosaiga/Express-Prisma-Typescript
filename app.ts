@@ -1,5 +1,5 @@
 // src/app.ts
-import express, { Express, Request, Response,Router  } from 'express'
+import express, { Express, Request, Response, Router } from 'express'
 import { PrismaClient } from '@prisma/client'
 import { request } from 'http'
 
@@ -8,22 +8,54 @@ const prisma = new PrismaClient()
 const app: Express = express()
 const port: number = 3000
 import about from './router/about'
+import testndex from './router/index'
 
 app.use(express.json());
 app.set('views', './src/view');
 app.set('view engine', 'ejs');
-// app.get('/', (req, res) => {
-//     res.json({
-//         message: 'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!'
-//     })
-// })
+ 
 app.listen(port, () => console.log(`Application is running on http://localhost:${port}/`))
 
-app.use('/about',about)
+app.use('/about', about)
+app.use('/test', testndex)
 
 
 app.get('/', (req, res) => {
-    res.render('index',{title:'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!'})
+    res.render('index', { title: 'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!' })
+})
+
+app.get('/aboutusers', async (req, res) => {
+    const users = await prisma.user.findMany({
+        select: {
+            id: true,
+            name: true,
+            email: true,
+        }
+    })
+    res.render('users', {
+        title: 'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!',
+        users
+
+    })
+})
+
+app.get('/aboutposts', async (req, res) => {
+    const posts = await prisma.post.findMany({
+        select: {
+            id: true,
+            title: true,
+            content: true,
+            published: true,
+            authorId: true,
+            createdAt: true,
+            updatedAt: true
+        }
+    })
+    res.render('posts', {
+        title: 'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!',
+        posts
+
+    })
 })
 
 app.post('/create/user', async (req, res) => {
@@ -63,13 +95,13 @@ app.get('/users', async (req, res) => {
 app.get('/finduser/:id', async (req, res) => {
     try {
         const { id } = req.params
-        
+
         const user = await prisma.user.findMany({
             where: {
                 id: Number(id), // Assuming the ID is an integer, convert it if needed
             },
-            include:{
-                posts:true
+            include: {
+                posts: true
             }
         })
         res.json(user);
@@ -136,13 +168,13 @@ app.get('/posts/', async (req, res) => {
 app.post('/post/create/:id', async (req, res) => {
     try {
         const { id } = req.params
-        const {  title, content, published } = req.body
+        const { title, content, published } = req.body
         const createdPost = await prisma.post.create({
             data: {
                 title,
                 content,
                 published,
-                
+
                 author: {
                     connect: {
                         id: Number(id),
@@ -189,24 +221,24 @@ app.get('/user/post/:id', async (req, res) => {
 app.put('/edit/user/:id', async (req, res) => {
     try {
         const { id } = req.params
-        const {name , email} = req.body
+        const { name, email } = req.body
         const edituser = await prisma.user.update({
-            where:{
+            where: {
                 id: Number(id)
             },
-            data:{ name, email}
+            data: { name, email }
         })
-       
+
         res.json({
             ...edituser,
             message: "Change data successfully",
         });
-        
+
     } catch (error: any) {
         console.log(error.message)
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
-            
+
         })
     }
 })
@@ -216,12 +248,12 @@ app.put('/edit/user/:id', async (req, res) => {
 app.put('/edit/postId/:id', async (req, res) => {
     try {
         const { id } = req.params
-        const {title , content,published} = req.body
+        const { title, content, published } = req.body
         const editpost = await prisma.post.update({
-            where:{
+            where: {
                 id: Number(id)
             },
-            data:{ title , content,published}
+            data: { title, content, published }
         })
 
         res.json({
@@ -239,19 +271,20 @@ app.put('/edit/postId/:id', async (req, res) => {
 
 app.put('/edit/user/:authorId/post/:id', async (req, res) => {
     try {
-        const {  id,authorId } = req.params
-        const {title , content,published} = req.body
+        const { id, authorId } = req.params
+        const { title, content, published } = req.body
         const posts = await prisma.post.update({
-            where:{
+            where: {
                 id: Number(id),
                 authorId: Number(authorId)
-                
+
             },
-            data:{ 
-                title ,
-                 content,
-                 published}
-            })
+            data: {
+                title,
+                content,
+                published
+            }
+        })
 
         res.json({
             ...posts,
@@ -265,11 +298,11 @@ app.put('/edit/user/:authorId/post/:id', async (req, res) => {
     }
 })
 
-app.delete('/delete/user/:id',async (req,res) => {
+app.delete('/delete/user/:id', async (req, res) => {
     try {
-        const {id} = req.params
+        const { id } = req.params
         const deleteUser = await prisma.user.delete({
-            where:{
+            where: {
                 id: Number(id)
             }
         })
@@ -289,9 +322,9 @@ app.delete('/delete/user/:id',async (req,res) => {
 app.delete('/post/delete/:id', async (req, res) => {
     try {
         const { id } = req.params
-        const {authorId} = req.body
+        const { authorId } = req.body
         const deletePost = await prisma.post.delete({
-            where:{
+            where: {
                 id: Number(id),
                 authorId: Number(authorId),
             },
@@ -311,9 +344,9 @@ app.delete('/post/delete/:id', async (req, res) => {
 
 app.delete('/deletePost/userId/:authorId/postId/:id', async (req, res) => {
     try {
-        const { id,authorId } = req.params
+        const { id, authorId } = req.params
         const deletePost = await prisma.post.deleteMany({
-            where:{
+            where: {
                 id: Number(id),
                 authorId: Number(authorId)
             },

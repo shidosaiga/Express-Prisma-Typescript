@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+
+<%- include('partials/head.ejs'); %>
+
+    <body>
+        <div class="container mt-2">
+            <nav class="nav nav-pills nav-fill">
+                <a class="nav-link " aria-current="page" href="/">Home</a>
+                <a class="nav-link" href="/about">About me</a>
+                <a class="nav-link active" href="/aboutusers">Users</a>
+                <a class="nav-link" href="/aboutposts">Posts</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">JSON</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/users" target=”_blank”>/users</a></li>
+                        <li><a class="dropdown-item" href="/posts" target=”_blank”>/posts</a></li>
+                    </ul>
+                </li>
+
+            </nav>
+            <header>
+                <h1>Welcome</h1>
+                <p>
+                    <%=title%>
+                </p>
+                <h1>All Users</h1>
+
+
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="card">
+                            <div id="table" class="table-editable">
+                                <table id="modal-table" class="sortable table table-bordered table-responsive-md table-hover">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>title</th>
+                                            <th>content</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="allocate-table-body">
+
+                                        <% users.forEach(users => { %>
+                                            <tr>
+                                                <td>
+                                                    <%= users.id %>
+                                                </td>
+                                                <td>
+                                                    <%= users.name %>
+                                                </td>
+                                                <td>
+                                                    <%= users.email %>
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <%- include('partials/footer.ejs'); %>
+        </div>
+    </body>
+
+
+</html>
