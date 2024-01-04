@@ -11,13 +11,7 @@
                 <a class="nav-link" href="/about">About me</a>
                 <a class="nav-link " href="/aboutusers">Users</a>
                 <a class="nav-link active" href="/aboutposts">Posts</a>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">JSON</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/users" target=”_blank”>/users</a></li>
-                        <li><a class="dropdown-item" href="/posts" target=”_blank”>/posts</a></li>
-                    </ul>
-                </li>
+                <%- include('partials/list.ejs'); %>
             </nav>
             <header>
                 <h1>Welcome</h1>

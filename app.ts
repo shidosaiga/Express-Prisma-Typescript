@@ -3,12 +3,13 @@ import express, { Express, Request, Response, Router } from 'express'
 import { PrismaClient } from '@prisma/client'
 import { request } from 'http'
 
-
 const prisma = new PrismaClient()
 const app: Express = express()
 const port: number = 3000
 import about from './router/about'
-import testndex from './router/index'
+import testindex from './router/index'
+import { Services, Render } from './router/services' // Module exprots file location
+
 
 app.use(express.json());
 app.set('views', './src/view');
@@ -17,154 +18,25 @@ app.set('view engine', 'ejs');
 app.listen(port, () => console.log(`Application is running on http://localhost:${port}/`))
 
 app.use('/about', about)
-app.use('/test', testndex)
-
+app.use('/test', testindex)
 
 app.get('/', (req, res) => {
     res.render('index', { title: 'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!' })
 })
 
-app.get('/aboutusers', async (req, res) => {
-    const users = await prisma.user.findMany({
-        select: {
-            id: true,
-            name: true,
-            email: true,
-        }
-    })
-    res.render('users', {
-        title: 'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!',
-        users
+// Render to client
+app.get('/aboutusers',Render.AboutUser)
+app.get('/aboutposts', Render.AboutPost)
 
-    })
-})
+//APIs service
 
-app.get('/aboutposts', async (req, res) => {
-    const posts = await prisma.post.findMany({
-        select: {
-            id: true,
-            title: true,
-            content: true,
-            published: true,
-            authorId: true,
-            createdAt: true,
-            updatedAt: true
-        }
-    })
-    res.render('posts', {
-        title: 'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!',
-        posts
+app.get('/getall',Services.GetallOfUser)//test Module exprots
+app.get('/users', Services.GetUser)
+app.get('/finduser/:id', Services.FindUser)
+app.get('/post/:id', Services.FindPost)
+app.get('/posts/', Services.GetAllPost)
 
-    })
-})
-
-app.post('/create/user', async (req, res) => {
-    try {
-        const { name, email } = req.body
-        const user = await prisma.user.create({
-            data: {
-                name,
-                email,
-            },
-        })
-        res.json({
-            ...user,
-            message: "Crate data successfully",
-        });
-    } catch (error: any) {
-        console.log(error.message)
-        res.status(500).json({
-            message: "Internal Server Error or something went wrong",
-        })
-    }
-})
-
-app.get('/users', async (req, res) => {
-    try {
-        const { name, email } = req.body
-        const users = await prisma.user.findMany()
-        res.json(users);
-    } catch (error: any) {
-        console.log(error.message)
-        res.status(500).json({
-            message: "Internal Server Error or something went wrong",
-        })
-    }
-})
-
-app.get('/finduser/:id', async (req, res) => {
-    try {
-        const { id } = req.params
-
-        const user = await prisma.user.findMany({
-            where: {
-                id: Number(id), // Assuming the ID is an integer, convert it if needed
-            },
-            include: {
-                posts: true
-            }
-        })
-        res.json(user);
-
-    } catch (error: any) {
-        console.log(error.message)
-        res.status(500).json({
-            message: "Internal Server Error or something went wrong",
-        })
-    }
-})
-app.get('/post/:id', async (req, res) => {
-    try {
-        const { id }: { id?: string } = req.params
-
-        const post = await prisma.post.findUnique({
-            where: { id: Number(id) },
-        })
-        res.json(post);
-
-    } catch (error: any) {
-        console.log(error.message)
-        res.status(500).json({
-            message: "Internal Server Error or something went wrong",
-        })
-    }
-})
-
-app.get('/posts/', async (req, res) => {
-    try {
-        const post = await prisma.post.findMany()
-        res.json(post);
-
-    } catch (error: any) {
-        console.log(error.message)
-        res.status(500).json({
-            message: "Internal Server Error or something went wrong",
-        })
-    }
-})
-
-// app.post('/post/create', async (req, res) => { //test create Poste without authorId in params
-//     try {
-
-//         const { authorId, title, content, published } = req.body
-//         const userFeed = await prisma.post.create({
-//             data: { 
-//                 title,
-//                 content,
-//                 authorId, 
-//                 published 
-//             },
-//         })
-//         res.json(userFeed);
-
-//     } catch (error: any) {
-//         console.log(error.message)
-//         res.status(500).json({
-//             message: "Internal Server Error or something went wrong",
-//         })
-//     }
-// })
-
+app.post('/create/user', Services.CrateUser)
 app.post('/post/create/:id', async (req, res) => {
     try {
         const { id } = req.params
