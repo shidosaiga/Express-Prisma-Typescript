@@ -1,14 +1,16 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
+var __awaiter = (this && this.__awaiter) || function(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function(resolve) { resolve(value); }); }
+    return new(P || (P = Promise))(function(resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+
         function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
+var __importDefault = (this && this.__importDefault) || function(mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -29,7 +31,7 @@ app.use('/test', index_1.default);
 app.get('/', (req, res) => {
     res.render('index', { title: 'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!' });
 });
-app.get('/aboutusers', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/aboutusers', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     const users = yield prisma.user.findMany({
         select: {
             id: true,
@@ -42,7 +44,7 @@ app.get('/aboutusers', (req, res) => __awaiter(void 0, void 0, void 0, function*
         users
     });
 }));
-app.get('/aboutposts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/aboutposts', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     const posts = yield prisma.post.findMany({
         select: {
             id: true,
@@ -60,7 +62,7 @@ app.get('/aboutposts', (req, res) => __awaiter(void 0, void 0, void 0, function*
     });
 }));
 //APIs service
-app.post('/create/user', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post('/create/user', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     try {
         const { name, email } = req.body;
         const user = yield prisma.user.create({
@@ -70,28 +72,26 @@ app.post('/create/user', (req, res) => __awaiter(void 0, void 0, void 0, functio
             },
         });
         res.json(Object.assign(Object.assign({}, user), { message: "Crate data successfully" }));
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
         });
     }
 }));
-app.get('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/users', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     try {
         const { name, email } = req.body;
         const users = yield prisma.user.findMany();
         res.json(users);
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
         });
     }
 }));
-app.get('/finduser/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/finduser/:id', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     try {
         const { id } = req.params;
         const user = yield prisma.user.findMany({
@@ -103,35 +103,32 @@ app.get('/finduser/:id', (req, res) => __awaiter(void 0, void 0, void 0, functio
             }
         });
         res.json(user);
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
         });
     }
 }));
-app.get('/post/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/post/:id', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     try {
         const { id } = req.params;
         const post = yield prisma.post.findUnique({
             where: { id: Number(id) },
         });
         res.json(post);
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
         });
     }
 }));
-app.get('/posts/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/posts/', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     try {
         const post = yield prisma.post.findMany();
         res.json(post);
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
@@ -157,7 +154,7 @@ app.get('/posts/', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 //         })
 //     }
 // })
-app.post('/post/create/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post('/post/create/:id', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     try {
         const { id } = req.params;
         const { title, content, published } = req.body;
@@ -174,36 +171,34 @@ app.post('/post/create/:id', (req, res) => __awaiter(void 0, void 0, void 0, fun
             },
         });
         res.json(Object.assign(Object.assign({}, createdPost), { message: "Crate data successfully" }));
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
         });
     }
 }));
-app.get('/user/post/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/user/post/:id', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     try {
         const { id } = req.params;
         const posts = yield prisma.user
             .findUnique({
-            where: {
-                id: Number(id),
-            },
-        })
+                where: {
+                    id: Number(id),
+                },
+            })
             .posts({
-            where: { published: true },
-        });
+                where: { published: true },
+            });
         res.json(posts);
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
         });
     }
 }));
-app.put('/edit/user/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.put('/edit/user/:id', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     try {
         const { id } = req.params;
         const { name, email } = req.body;
@@ -214,15 +209,14 @@ app.put('/edit/user/:id', (req, res) => __awaiter(void 0, void 0, void 0, functi
             data: { name, email }
         });
         res.json(Object.assign(Object.assign({}, edituser), { message: "Change data successfully" }));
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
         });
     }
 }));
-app.put('/edit/postId/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.put('/edit/postId/:id', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     try {
         const { id } = req.params;
         const { title, content, published } = req.body;
@@ -233,8 +227,7 @@ app.put('/edit/postId/:id', (req, res) => __awaiter(void 0, void 0, void 0, func
             data: { title, content, published }
         });
         res.json(Object.assign(Object.assign({}, editpost), { message: "Change data successfully" }));
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
@@ -242,7 +235,7 @@ app.put('/edit/postId/:id', (req, res) => __awaiter(void 0, void 0, void 0, func
         res.json(error.message);
     }
 }));
-app.put('/edit/user/:authorId/post/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.put('/edit/user/:authorId/post/:id', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     try {
         const { id, authorId } = req.params;
         const { title, content, published } = req.body;
@@ -258,15 +251,14 @@ app.put('/edit/user/:authorId/post/:id', (req, res) => __awaiter(void 0, void 0,
             }
         });
         res.json(Object.assign(Object.assign({}, posts), { message: "Change data successfully" }));
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
         });
     }
 }));
-app.delete('/delete/user/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.delete('/delete/user/:id', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     try {
         const { id } = req.params;
         const deleteUser = yield prisma.user.delete({
@@ -278,15 +270,14 @@ app.delete('/delete/user/:id', (req, res) => __awaiter(void 0, void 0, void 0, f
             deleteUser,
             message: "delete data successfully",
         });
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
         });
     }
 }));
-app.delete('/post/delete/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.delete('/post/delete/:id', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     try {
         const { id } = req.params;
         const { authorId } = req.body;
@@ -297,15 +288,14 @@ app.delete('/post/delete/:id', (req, res) => __awaiter(void 0, void 0, void 0, f
             },
         });
         res.json(Object.assign(Object.assign({}, deletePost), { message: "delete data successfully" }));
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
         });
     }
 }));
-app.delete('/deletePost/userId/:authorId/postId/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.delete('/deletePost/userId/:authorId/postId/:id', (req, res) => __awaiter(void 0, void 0, void 0, function*() {
     try {
         const { id, authorId } = req.params;
         const deletePost = yield prisma.post.deleteMany({
@@ -315,8 +305,7 @@ app.delete('/deletePost/userId/:authorId/postId/:id', (req, res) => __awaiter(vo
             },
         });
         res.json(Object.assign(Object.assign({}, deletePost), { message: "delete data successfully" }));
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.status(500).json({
             message: "Internal Server Error or something went wrong",
