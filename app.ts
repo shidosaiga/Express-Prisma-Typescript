@@ -30,7 +30,7 @@ app.get('/aboutposts', Render.AboutPost)
 
 //APIs service
 
-app.get('/getall',Services.GetallOfUser)//test Module exprots
+app.get('/module/getall',Services.GetallOfUser)//test Module exprots
 app.get('/users', Services.GetUser)
 app.get('/finduser/:id', Services.FindUser)
 app.get('/post/:id', Services.FindPost)
