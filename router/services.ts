@@ -1,10 +1,10 @@
 import express, { Express, Request, Response, Router } from 'express'
 import { PrismaClient } from '@prisma/client'
-import { request } from 'http'
+//import { request } from 'http'
 
 
 const prisma = new PrismaClient()
-const app: Express = express()
+//const app: Express = express()
 
 // CRUD concept with GET: POST: PUT: DELETE:
 class Services {
@@ -59,7 +59,7 @@ class Services {
     static async FindUser(req: Request, res: Response) {
         try {
             const { id } = req.params
-    
+
             const user = await prisma.user.findMany({
                 where: {
                     id: Number(id), // Assuming the ID is an integer, convert it if needed
@@ -69,7 +69,7 @@ class Services {
                 }
             })
             res.json(user);
-    
+
         } catch (error: any) {
             console.log(error.message)
             res.status(500).json({
@@ -80,12 +80,12 @@ class Services {
     static async FindPost(req: Request, res: Response) {
         try {
             const { id }: { id?: string } = req.params
-    
+
             const post = await prisma.post.findUnique({
                 where: { id: Number(id) },
             })
             res.json(post);
-    
+
         } catch (error: any) {
             console.log(error.message)
             res.status(500).json({
@@ -97,7 +97,7 @@ class Services {
         try {
             const post = await prisma.post.findMany()
             res.json(post);
-    
+
         } catch (error: any) {
             console.log(error.message)
             res.status(500).json({
@@ -117,7 +117,7 @@ class Services {
                 .posts({
                     where: { published: true },
                 })
-    
+
             res.json(posts)
         } catch (error: any) {
             console.log(error.message)
@@ -135,7 +135,7 @@ class Services {
                     title,
                     content,
                     published,
-    
+
                     author: {
                         connect: {
                             id: Number(id),
@@ -147,7 +147,28 @@ class Services {
                 ...createdPost,
                 message: "Crate data successfully",
             });
-    
+
+        } catch (error: any) {
+            console.log(error.message)
+            res.status(500).json({
+                message: "Internal Server Error or something went wrong",
+            })
+        }
+    }
+    static async CratePost(req: Request, res: Response) {
+        try {
+
+            const { authorId, title, content, published } = req.body
+            const userFeed = await prisma.post.create({
+                data: {
+                    title,
+                    content,
+                    authorId,
+                    published
+                },
+            })
+            res.json(userFeed);
+
         } catch (error: any) {
             console.log(error.message)
             res.status(500).json({
@@ -165,31 +186,31 @@ class Services {
                 },
                 data: { name, email }
             })
-    
+
             res.json({
                 ...edituser,
                 message: "Change data successfully",
             });
-    
+
         } catch (error: any) {
             console.log(error.message)
             res.status(500).json({
                 message: "Internal Server Error or something went wrong",
-    
+
             })
         }
     }
     static async EditPostById(req: Request, res: Response) {
         try {
             const { id } = req.params
-            const { title, content, published ,authorId} = req.body
+            const { title, content, published, authorId } = req.body
             const editpost = await prisma.post.update({
                 where: {
                     id: Number(id)
                 },
-                data: { title, content, published ,authorId}
+                data: { title, content, published, authorId }
             })
-    
+
             res.json({
                 ...editpost,
                 message: "Change data successfully",
@@ -210,7 +231,7 @@ class Services {
                 where: {
                     id: Number(id),
                     authorId: Number(authorId)
-    
+
                 },
                 data: {
                     title,
@@ -218,7 +239,7 @@ class Services {
                     published
                 }
             })
-    
+
             res.json({
                 ...posts,
                 message: "Change data successfully",
@@ -238,7 +259,7 @@ class Services {
                     id: Number(id)
                 }
             })
-    
+
             res.json({
                 deleteUser,
                 message: "delete data successfully",
@@ -264,7 +285,7 @@ class Services {
                 ...deletePost,
                 message: "delete data successfully",
             })
-    
+
         } catch (error: any) {
             console.log(error.message)
             res.status(500).json({
@@ -285,7 +306,7 @@ class Services {
                 ...deletePost,
                 message: "delete data successfully",
             })
-    
+
         } catch (error: any) {
             console.log(error.message)
             res.status(500).json({
@@ -328,7 +349,7 @@ class Render {
                 title: true,
                 content: true,
                 published: true || false,
-                authorId: true,
+                authorId: true ,
                 createdAt: true,
                 updatedAt: true
             }
@@ -336,10 +357,10 @@ class Render {
         res.render('posts', {
             title: 'Hello this is Restful API Express + TypeScirpt + Prisma made by Apirak Kaewpachum !!',
             posts
-    
+
         })
     }
 }
-    
+
 
 export { Services, Render }; 

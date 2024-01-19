@@ -1,9 +1,8 @@
-// src/app.ts
 import express, { Express, Request, Response, Router } from 'express'
 import { PrismaClient } from '@prisma/client'
 import { request } from 'http'
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 const app: Express = express()
 const port: number = 3000
 import about from './router/about'
@@ -39,6 +38,8 @@ app.get('/user/post/:id', Services.GetPostOfAuthorId)
 
 app.post('/create/user', Services.CrateUser)
 app.post('/post/create/:id', Services.CratePostByUserId)
+app.post('/post/create/', Services.CratePost) //don't add post in user ID
+
 
 app.put('/edit/user/:id', Services.EditUserById)
 app.put('/edit/postId/:id', Services.EditPostById)
